@@ -8,6 +8,8 @@ const app = express()
 const port = 3000
 
 app.set("port",port)
+// esta linea es muy importante por que nos permite interactuar con los JSON que enviamos, sin esta linea no sabemos trabajar con JSON
+app.use(express.json())
 
 //Rutas
 app.get("/",(req,res)=>{
