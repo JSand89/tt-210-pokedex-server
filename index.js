@@ -15,6 +15,7 @@ app.use(express.json())
 app.get("/",(req,res)=>{
     res.send("Hola entrenador")
 })
+
 app.use("/api/pokemon",pokemonRoutes)
 
 mongoose.connect(process.env.MONGO_URI)
