@@ -1,5 +1,5 @@
 const Pokemon = require('../models/pokemon')
-
+const {fetchPokemon} = require("../services/fetch")
 exports.hiTrainer = async (req,res)=>{
     try {
         res.send("Hola entrenador ahora desde el controlador")
@@ -32,12 +32,24 @@ exports.getPokemons = async (req,res) =>{
 exports.getPokemonByIdPokemon = async (req,res)=>{
     try {
         const pokemonID = req.params.pokemon_id
-        const pokemon = await Pokemon.findOne({"pokemon_id":pokemonID})
+        let pokemon = await Pokemon.findOne({"pokemon_id":pokemonID})
         //A futuro vamos a tener que implementar una logica que nos busque las caracteristicas en Pokeapi
         if(!pokemon){
-            return res.status(404).json({message:"Pokemon not find"})
+            pokemon = {
+                pokemon_id:pokemonID,
+                view:false,
+                catch:false,
+                in_team:false
+            }
+            const pokemonData = await fetchPokemon(pokemonID,pokemon)
+            if(!pokemonData){
+                return res.status(404).json({message:"pokemon not find"})
+            }
+            console.log(pokemonData)
+            return res.status(200).json(pokemonData)
         }
-        res.status(200).json(pokemon)
+        const pokemonData = await fetchPokemon(pokemonID,pokemon)
+        res.status(200).json(pokemonData)
     } catch (error) {
         res.status(500).json({error:error.message})        
     }
